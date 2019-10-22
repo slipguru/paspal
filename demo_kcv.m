@@ -25,7 +25,7 @@ fx = reshape(repmat(rand(ng,1)./ng,1,dg)',dg*ng,1); %true coefficient vector
 X = zeros(n+ntest,ng*dg);
 for g = 1:ng;
     Xtmp = rand(n+ntest,1)*2-1;
-    for i = ((g-1)*dg+1):(g*dg); 
+    for i = ((g-1)*dg+1):(g*dg);
         X(:,i) = awgn(Xtmp,10);
     end
 end
@@ -85,3 +85,12 @@ blocks = mat2cell(reshape(1:d,5,d/5),5,ones(d/5,1));
 prediction_grl = grl_pred(model_grl,Xtest,Ytest,'regr');
 disp(prediction_grl)
 
+
+%% MULTI-TASK LEARNING
+fprintf('\n===================================================')
+fprintf('\n\t\tMULTI-TASK LEARNING')
+fprintf('\n===================================================')
+% build "fake" second task
+X2 = X;
+Y2 =2.*Y;
+[output_mtl,model_mtl] =mtl_kcv({X,X2},{Y,Y2},'plot',true,'K',5,'smooth_par',0.01,'protocol',protocol);
